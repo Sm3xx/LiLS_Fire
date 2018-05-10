@@ -10,6 +10,10 @@ local Keys = {
   ["NENTER"] = 201, ["N4"] = 108, ["N5"] = 60, ["N6"] = 107, ["N+"] = 96, ["N-"] = 97, ["N7"] = 117, ["N8"] = 61, ["N9"] = 118
 }
 
+local admins = {
+    'steam:11000010cd94f4aa'
+}
+
 ESX = nil
 TriggerEvent('esx:getSharedObject', function(obj) ESX = obj end)
 
@@ -32,39 +36,34 @@ isFireToDelete = false
 -- 		Citizen.Wait( 5000 )
 --
 -- 		if NetworkIsSessionStarted() then
--- 			TriggerServerEvent( "checkadmin")
+-- 			TriggerServerEvent("checkadmin")
 -- 		end
 -- 	end
--- end )
+-- end)
+--
+-- function isAdmin(player)
+--     local allowed = false
+--     for i,id in ipairs(admins) do
+--         for x,pid in ipairs(GetPlayerIdentifiers(player)) do
+--             if string.lower(pid) == string.lower(id) then
+--                 allowed = true
+--             end
+--         end
+--     end
+--     return allowed
+-- end
 
---[[ unnessacary
-
-Citizen.CreateThread(function()
-    while true do
-        Citizen.Wait(0)
-        if IsControlJustReleased(0, Keys["LEFTALT"]) then
-            TriggerServerEvent("FIRE", PlayerId())
-        end
-
-        if IsControlJustReleased(0, Keys["X"]) then
-          TriggerServerEvent("delFire", PlayerId())
-        end
-    end
-end)
-]]
-
+-- RegisterCommand('startfire', function() --triggers a serverevent when command is typed in chat
+--   TriggerServerEvent("fire:FIRE")
+-- end)
+--
+-- RegisterCommand('delfire', function() --triggers a serverevent when command is typed in chat
+--   TriggerServerEvent("fire:delFire")
+-- end)
 
 function Chat(t)
   TriggerEvent("chatMessage", "DEBUG", {255, 0, 0}, "" .. tostring(t))
 end
-
-RegisterCommand('startfire', function() --triggers a serverevent when command is typed in chat
-    TriggerServerEvent("fire:FIRE")
-end)
-
-RegisterCommand('delfire', function() --triggers a serverevent when command is typed in chat
-    TriggerServerEvent("fire:delFire")
-end)
 
 
 RegisterNetEvent("fire:firesync") 												--registers the Client Event, so the server can trigger it
@@ -96,7 +95,16 @@ AddEventHandler("fire:firesync", function() 								--actual Event
       end
 
     end
-    Chat("Fire created.")
+
+    local street = GetStreetNameAtCoord(location[1], location[2], location[3])
+
+    TriggerServerEvent('esx_phone:send', 'ambulance', "Hilfe ein " .. location[7] .. " in der " .. GetStreetNameFromHashKey(street), true, {
+      x = location[1],
+      y = location[2],
+      z = location[2]
+    })
+
+    -- Chat("Fire created.")
   end)
 end)
 
@@ -106,5 +114,5 @@ AddEventHandler("fire:delFireSync", function()
     RemoveScriptFire(fire[i])
   end
   fire = {}
-  Chat("Fire deleted")
+  -- Chat("Fire deleted")
 end)

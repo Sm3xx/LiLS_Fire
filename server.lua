@@ -1,25 +1,11 @@
 
 --- ADD YOUR ADMIN STEAM IDs TO WHITELIST THEM
-local admins = {
-    'steam:11000010cd94f4a'
-}
 local isFireToDelete = false
 
 ESX = nil
 TriggerEvent('esx:getSharedObject', function(obj) ESX = obj end)
 
--- function isAdmin(player)
---     local allowed = false
---     for i,id in ipairs(admins) do
---         for x,pid in ipairs(GetPlayerIdentifiers(player)) do
---             if string.lower(pid) == string.lower(id) then
---                 allowed = true
---             end
---         end
---     end
---     return allowed
--- end
---
+
 -- RegisterServerEvent('checkadmin')
 -- AddEventHandler('checkadmin', function()
 -- 	local id = source
@@ -56,13 +42,6 @@ ESX.RegisterServerCallback('getloc', function(source, cb)
 
   cb({location, spreadTable, stackFlames})
 end)
---
--- ESX.RegisterServerCallback("getFireSpawnTimer", function(source, cb)
---   timer = math.random(Config.FireSpawnTimer["minTime"], Config.FireSpawnTimer["maxTime"])
---   clearFire = timer - Config.autoDeleteFireTimer
---   print("Next  " .. timer .. " - " .. "Clear  " .. clearFire)
---   cb({timer, clearFire})
--- end)
 
 
 -- Timer for creating/deleting fire
