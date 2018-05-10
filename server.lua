@@ -77,23 +77,23 @@ end)
 Citizen.CreateThread(function()
   timeLeft = math.random(Config.FireSpawnTimer["minTime"], Config.FireSpawnTimer["maxTime"])
   clearFire = timeLeft - Config.autoDeleteFireTimer
-  print("Next: " .. timeLeft .. " - " .. "Clear " .. clearFire)
+  -- print("Next: " .. timeLeft .. " - " .. "Clear " .. clearFire)
     while true do
         Wait(1000)
         timeLeft = timeLeft - 1
-        print("Left: " .. timeLeft .. " - " .. "Clear: " .. clearFire .. " Del. Fire: " .. tostring(isFireToDelete))
+        -- print("Left: " .. timeLeft .. " - " .. "Clear: " .. clearFire .. " Del. Fire: " .. tostring(isFireToDelete))
         TriggerEvent("fire:timeleftsync", timeLeft)
 
         if timeLeft < 1 then
           timeLeft = math.random(Config.FireSpawnTimer["minTime"], Config.FireSpawnTimer["maxTime"])
           clearFire = timeLeft - Config.autoDeleteFireTimer
           isFireToDelete = true;
-          print("Next: " .. timeLeft .. " - " .. "Clear " .. clearFire)
+          -- print("Next: " .. timeLeft .. " - " .. "Clear " .. clearFire)
         end
 
         if timeLeft <= clearFire and isFireToDelete then
           TriggerClientEvent("fire:delFireSync", -1)
-          print("Fire deleted")
+          -- print("Fire deleted")
           isFireToDelete = false
         end
     end
