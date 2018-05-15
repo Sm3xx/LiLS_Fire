@@ -1,6 +1,6 @@
 Config = {}
 
-Config.FireSpawnTimer = {
+Config.FireSpawnTimer = {   -- min/max time in seconds
   ["minTime"] = 2400, ["maxTime"] = 3600
 }
 
