@@ -35,39 +35,39 @@ RegisterNetEvent("fire:firesync") 												  --  registers the Client Event, 
 AddEventHandler("fire:firesync", function() 								--  actual Event
 
   ESX.TriggerServerCallback('getloc', function(result)      --  Trigger Callback to get one random Location for all Clients
-    location = result[1]                                    --  Read Coordinates from the array
-    spreadTable = result[2]                                 --  Read max radius the fire is spread out
+    location = result["loc"]                                --  Read Coordinates from the array
+    spreadTable = result["spread"]                          --  Read max radius the fire is spread out
 
     for i = 1, #spreadTable do                              --  Run the amount specified in the Config (flamecount)
       spread = spreadTable[i]                               --  Reading min/max Fire spread of Location array
-      stackFlames = spread[3]                               --  Reading the randomized stacking height for the flames
-      table.insert(fire, StartScriptFire(location[1] + spread[1], location[2] + spread[2], location[3], 25, false))   --  creating flames and insert it into an array for later deletion
+      stackFlames = spread["stack"]                         --  Reading the randomized stacking height for the flames
+      table.insert(fire, StartScriptFire(location["x"] + spread["x"], location["y"] + spread["y"], location["z"], 25, false))   --  creating flames and insert it into an array for later deletion
 
       if stackFlames > 95 then
-        table.insert(fire, StartScriptFire(location[1] + spread[1], location[2] + spread[2], location[3] + 4 * Config.fireStackHeight, 25, false))
+        table.insert(fire, StartScriptFire(location["x"] + spread["x"], location["y"] + spread["y"], location["z"] + 4 * Config.fireStackHeight, 25, false))
       end
 
       if stackFlames <= 85 then
-        table.insert(fire ,StartScriptFire(location[1] + spread[1], location[2] + spread[2], location[3] + 3 * Config.fireStackHeight, 25, false))
+        table.insert(fire ,StartScriptFire(location["x"] + spread["x"], location["y"] + spread["y"], location["z"] + 3 * Config.fireStackHeight, 25, false))
       end
 
       if stackFlames <= 50 then
-        table.insert(fire, StartScriptFire(location[1] + spread[1], location[2] + spread[2], location[3] + 2 * Config.fireStackHeight, 25, false))
+        table.insert(fire, StartScriptFire(location["x"] + spread["x"], location["y"] + spread["y"], location["z"] + 2 * Config.fireStackHeight, 25, false))
       end
 
       if stackFlames <= 15 then
-        table.insert(fire, StartScriptFire(location[1] + spread[1], location[2] + spread[2], location[3] + Config.fireStackHeight, 25, false))
+        table.insert(fire, StartScriptFire(location["x"] + spread["x"], location["y"] + spread["y"], location["z"] + Config.fireStackHeight, 25, false))
       end
 
     end
 
-    local street = GetStreetNameAtCoord(location[1], location[2], location[3])      -- reading streetname from the firelocation
+    local street = GetStreetNameAtCoord(location["x"], location["y"], location["z"])      -- reading streetname from the firelocation
 
     -- Trigger Dispatch for ambulance/firefighters
-    TriggerServerEvent('esx_phone:send', 'ambulance', "Hilfe ein " .. location[7] .. " in der " .. GetStreetNameFromHashKey(street), true, {
-      x = location[1],
-      y = location[2],
-      z = location[2]
+    TriggerServerEvent('esx_phone:send', 'ambulance', "Hilfe ein " .. location["label"] .. " in der " .. GetStreetNameFromHashKey(street), true, {
+      x = location["x"],
+      y = location["y"],
+      z = location["z"]
     })
 
     -- Chat("Fire created.") -- Message for debugging

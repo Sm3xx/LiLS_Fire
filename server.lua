@@ -35,13 +35,13 @@ ESX.RegisterServerCallback('getloc', function(source, cb)
 
   for i=1, location[6] do                                                       -- run as often as specified as flamecount in the config
     local stackFlames = math.floor(math.random(1, 100))                         -- create random number between 1 and 100
-    local random_x = math.random(location[4], location[5])                      -- crate random number between min/max Spread specified in the config for the location
-    local random_y = math.random(location[4], location[5])                      -- crate random number between min/max Spread specified in the config for the location
-    local _table = {random_x, random_y, stackFlames}                            -- create an array out of the three values
+    local random_x = math.random(location["minSpread"], location["maxSpread"])  -- crate random number between min/max Spread specified in the config for the location
+    local random_y = math.random(location["minSpread"], location["maxSpread"])  -- crate random number between min/max Spread specified in the config for the location
+    local _table = {["x"]=random_x, ["y"]=random_y, ["stack"]=stackFlames}      -- create an array out of the three values
     table.insert(spreadTable, _table)                                           -- insert the previously generated array into the returning table
   end
 
-  cb({location, spreadTable, stackFlames})                                      -- return the location, the random spreads and the stack height for the flames
+  cb({["loc"]=location, ["spread"]=spreadTable, ["stackflames"]=stackFlames})                                      -- return the location, the random spreads and the stack height for the flames
 end)
 
 
@@ -54,7 +54,7 @@ AddEventHandler("fire:timeleftsync", function(nTimeLeft)                        
   end
 end)
 
-Citizen.CreateThread(function()
+Citizen.CreateThread(function()                                                 -- create the counter
   timeLeft = math.random(Config.FireSpawnTimer["minTime"], Config.FireSpawnTimer["maxTime"])    -- create first timer for the fire spawn
   clearFire = timeLeft - Config.autoDeleteFireTimer                             -- set the count the timer needs to fall below to clear the fire
     while true do

@@ -9,6 +9,6 @@ Config.autoDeleteFireTimer = 15   -- time after which the fire will be deletet a
 Config.fireStackHeight = 0.4    -- space between stacked flames
 
 Config.fireLocations = { -- x, y, z, minSpread, maxSpread, flameCount, fireType
-  {1959.8701, 3748.1833,  31.3437,  -6,  6, 200, "Ladenbrand"},       --  Sandy Shores Shop near Petrol Station
-  {1853.7718, 3746.4409,  32.3951,  -6,  6, 200, "Ladenbrand"},       --  Sandy Shores Tatoo Shop (needs to be further optimized)
+  {["x"]=1959.8701, ["y"]=3748.1833,  ["z"]=31.3437,  ["minSpread"]=-6,  ["maxSpread"]=6, ["flames"]=200, ["label"]="Ladenbrand"},       --  Sandy Shores Shop near Petrol Station
+  {["x"]=1853.7718, ["y"]=3746.4409,  ["z"]=32.3951,  ["minSpread"]=-6,  ["maxSpread"]=6, ["flames"]=200, ["label"]="Ladenbrand"},       --  Sandy Shores Tatoo Shop (needs to be further optimized)
 }
