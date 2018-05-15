@@ -10,64 +10,109 @@ local Keys = {
   ["NENTER"] = 201, ["N4"] = 108, ["N5"] = 60, ["N6"] = 107, ["N+"] = 96, ["N-"] = 97, ["N7"] = 117, ["N8"] = 61, ["N9"] = 118
 }
 
+local admins = {
+    'steam:11000010cd94f4aa'
+}
+
 ESX = nil
 TriggerEvent('esx:getSharedObject', function(obj) ESX = obj end)
 
-RegisterNetEvent('setadmin')
-AddEventHandler('setadmin', function()
-	group = true
-end)
+location = nil
+fire = {}
+timeLeft = nil
+clearFireTimer = nil
+
+isFireToDelete = false
+
+-- RegisterNetEvent('setadmin')
+-- AddEventHandler('setadmin', function()
+-- 	group = true
+-- end)
 
 
+-- Citizen.CreateThread(function()
+-- 	while true do
+-- 		-- Wait 5 seconds after player has loaded in and trigger the event.
+-- 		Citizen.Wait( 5000 )
+--
+-- 		if NetworkIsSessionStarted() then
+-- 			TriggerServerEvent("checkadmin")
+-- 		end
+-- 	end
+-- end)
+--
+-- function isAdmin(player)
+--     local allowed = false
+--     for i,id in ipairs(admins) do
+--         for x,pid in ipairs(GetPlayerIdentifiers(player)) do
+--             if string.lower(pid) == string.lower(id) then
+--                 allowed = true
+--             end
+--         end
+--     end
+--     return allowed
+-- end
 
-Citizen.CreateThread(function()
-	while true do
-		-- Wait 5 seconds after player has loaded in and trigger the event.
-		Citizen.Wait( 5000 )
+-- RegisterCommand('startfire', function() --triggers a serverevent when command is typed in chat
+--   TriggerServerEvent("fire:FIRE")
+-- end)
+--
+-- RegisterCommand('delfire', function() --triggers a serverevent when command is typed in chat
+--   TriggerServerEvent("fire:delFire")
+-- end)
 
-		if NetworkIsSessionStarted() then
-			TriggerServerEvent( "checkadmin")
-		end
-	end
-end )
-
-
-
-RegisterCommand('startfire', function() --triggers a serverevent when command is typed in chat
-    TriggerServerEvent("FIRE", PlayerId())
-end)
+function Chat(t)
+  TriggerEvent("chatMessage", "DEBUG", {255, 0, 0}, "" .. tostring(t))
+end
 
 
+RegisterNetEvent("fire:firesync") 												--registers the Client Event, so the server can trigger it
+AddEventHandler("fire:firesync", function() 								--actual Event
 
-
-RegisterNetEvent("firesync") 												--registers the Client Event, so the server can trigger it
-AddEventHandler("firesync", function(player) 								--actual Event
-
-  ESX.TriggerServerCallback('fire:randomizer', function(result)
-    random_x = result[2]
-    random_y = result[3]
+  ESX.TriggerServerCallback('getloc', function(result)
     location = result[1]
+    spreadTable = result[2]
+
+    for i = 1, #spreadTable do
+      spread = spreadTable[i]
+      stackFlames = spread[3]
+      table.insert(fire, StartScriptFire(location[1] + spread[1], location[2] + spread[2], location[3], 25, false))
+
+      if stackFlames > 95 then
+        table.insert(fire, StartScriptFire(location[1] + spread[1], location[2] + spread[2], location[3] + 4 * Config.fireStackHeight, 25, false))
+      end
+
+      if stackFlames <= 85 then
+        table.insert(fire ,StartScriptFire(location[1] + spread[1], location[2] + spread[2], location[3] + 3 * Config.fireStackHeight, 25, false))
+      end
+
+      if stackFlames <= 50 then
+        table.insert(fire, StartScriptFire(location[1] + spread[1], location[2] + spread[2], location[3] + 2 * Config.fireStackHeight, 25, false))
+      end
+
+      if stackFlames <= 15 then
+        table.insert(fire, StartScriptFire(location[1] + spread[1], location[2] + spread[2], location[3] + Config.fireStackHeight, 25, false))
+      end
+
+    end
+
+    local street = GetStreetNameAtCoord(location[1], location[2], location[3])
+
+    TriggerServerEvent('esx_phone:send', 'ambulance', "Hilfe ein " .. location[7] .. " in der " .. GetStreetNameFromHashKey(street), true, {
+      x = location[1],
+      y = location[2],
+      z = location[2]
+    })
+
+    -- Chat("Fire created.")
   end)
-
-  for i = 0, 120 do
-    StartScriptFire(location[1] + random_x, location[2] + random_y, 31.3437, 25, false)
-	end
 end)
 
-
-
-
-
-
-
-
-
-
---[[
-RegisterNetEvent("firesync") 												--registers the Client Event, so the server can trigger it
-AddEventHandler("firesync", function(player) 								--actual Event
-for i = 0, 120 do
-    StartScriptFire(1962.453 + math.random(-7,7), 3745.419 + math.random(-7,7), 31.3437, 25, false)
-	end
+RegisterNetEvent("fire:delFireSync")
+AddEventHandler("fire:delFireSync", function()
+  for i=1, #fire do
+    RemoveScriptFire(fire[i])
+  end
+  fire = {}
+  -- Chat("Fire deleted")
 end)
-]]
