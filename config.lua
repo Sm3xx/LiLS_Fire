@@ -4,7 +4,7 @@ Config.FireSpawnTimer = {   -- min/max time in seconds
   ["minTime"] = 2400, ["maxTime"] = 3600
 }
 
-Config.autoDeleteFireTimer = 15   -- time after which the fire will be deletet automacicly
+Config.autoDeleteFireTimer = 1200   -- time in seconds after which the fire will be deletet automacicly
 
 Config.fireStackHeight = 0.4    -- space between stacked flames
 
