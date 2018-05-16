@@ -1,6 +1,10 @@
 Config = {}
 
-Config.FireSpawnTimer = {                 -- min/max time in seconds
+Config.admins = {
+    'steam:11000010cd94f4aa'
+}
+
+Config.fireSpawnTimer = {                 -- min/max time in seconds
   ["minTime"] = 2400, ["maxTime"] = 3600
 }
 

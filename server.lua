@@ -35,8 +35,8 @@ ESX.RegisterServerCallback('getloc', function(source, cb)
 
   for i=1, location[6] do                                                       -- run as often as specified as flamecount in the config
     local stackFlames = math.floor(math.random(1, 100))                         -- create random number between 1 and 100
-    local random_x = math.random(location["minSpread"], location["maxSpread"])  -- crate random number between min/max Spread specified in the config for the location
-    local random_y = math.random(location["minSpread"], location["maxSpread"])  -- crate random number between min/max Spread specified in the config for the location
+    local random_x = math.random(location.minSpread, location.maxSpread)  			-- crate random number between min/max Spread specified in the config for the location
+    local random_y = math.random(location.minSpread, location.maxSpread)  			-- crate random number between min/max Spread specified in the config for the location
     local _table = {["x"]=random_x, ["y"]=random_y, ["stack"]=stackFlames}      -- create an array out of the three values
     table.insert(spreadTable, _table)                                           -- insert the previously generated array into the returning table
   end
@@ -55,7 +55,7 @@ AddEventHandler("fire:timeleftsync", function(nTimeLeft)                        
 end)
 
 Citizen.CreateThread(function()                                                 -- create the counter
-  timeLeft = math.random(Config.FireSpawnTimer["minTime"], Config.FireSpawnTimer["maxTime"])    -- create first timer for the fire spawn
+  timeLeft = math.random(Config.fireSpawnTimer.minTime, Config.fireSpawnTimer.maxTime)    -- create first timer for the fire spawn
   clearFire = timeLeft - Config.autoDeleteFireTimer                             -- set the count the timer needs to fall below to clear the fire
     while true do
         Wait(1000)
@@ -63,7 +63,7 @@ Citizen.CreateThread(function()                                                 
         TriggerEvent("fire:timeleftsync", timeLeft)                             -- trigger the sync event
 
         if timeLeft < 1 then                                                    -- create new counter and clear counter if fire is spawned
-          timeLeft = math.random(Config.FireSpawnTimer["minTime"], Config.FireSpawnTimer["maxTime"])
+          timeLeft = math.random(Config.fireSpawnTimer.minTime, Config.fireSpawnTimer.maxTime)
           clearFire = timeLeft - Config.autoDeleteFireTimer
           isFireToDelete = true;
         end
