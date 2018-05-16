@@ -22,12 +22,30 @@ clearFireTimer = nil
 isFireToDelete = false
 
 
--- function for debugging
-function Chat(t)
-  TriggerEvent("chatMessage", "DEBUG", {255, 0, 0}, "" .. tostring(t))
-end
--- function for debugging
+function isAdmin(player)
+  local allowed = false
+  for i,id in ipairs(Config.admins) do
+    for x,pid in ipairs(GetPlayerIdentifiers(player)) do
+      if string.lower(pid) == string.lower(id) then
+        allowed = true
+      end
+    end
+  end
 
+  return allowed
+end
+
+RegisterCommand('startfire', function(source) --triggers a serverevent when command is typed in chat
+  if isAdmin(GetPlayerId(source)) then
+    TriggerServerEvent("fire:FIRE")
+  end
+end)
+
+RegisterCommand('delfire', function() --triggers a serverevent when command is typed in chat
+  if isAdmin(GetPlayerId(source)) then
+    TriggerServerEvent("fire:delFire")
+  end
+end)
 
 RegisterNetEvent("fire:firesync") 											 --  registers the Client Event, so the server can trigger it
 AddEventHandler("fire:firesync", function() 						 --  actual Event
@@ -79,6 +97,13 @@ AddEventHandler("fire:delFireSync", function()        --  actual Event
   fire = {}                                           --  clearing the array
 end)
 
+-- function for debugging
+function Chat(t)
+  TriggerEvent("chatMessage", "DEBUG", {255, 0, 0}, "" .. tostring(t))
+end
+-- function for debugging
+
+
 
 -- RegisterNetEvent('setadmin')
 -- AddEventHandler('setadmin', function()
@@ -97,27 +122,3 @@ end)
 -- 	end
 -- end)
 --
--- function isAdmin(player)
---     local allowed = false
---     for i,id in ipairs(Config.admins) do
---         for x,pid in ipairs(GetPlayerIdentifiers(player)) do
---             if string.lower(pid) == string.lower(id) then
---                 allowed = true
---             end
---         end
---     end
---
---     return allowed
--- end
---
--- RegisterCommand('startfire', function(source) --triggers a serverevent when command is typed in chat
---   if isAdmin(GetPlayerId(source)) then
---     TriggerServerEvent("fire:FIRE")
---   end
--- end)
---
--- RegisterCommand('delfire', function() --triggers a serverevent when command is typed in chat
---   if isAdmin(GetPlayerId(source)) then
---     TriggerServerEvent("fire:delFire")
---   end
--- end)
